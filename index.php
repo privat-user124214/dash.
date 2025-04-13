@@ -11,7 +11,8 @@ if (isset($_SESSION['user'])) {
 $client_id = "1284484623279067196";
 $redirect_uri = urlencode("https://dash.novarix-studio.de/callback.php");
 
-$discord_oauth_url = "https://discord.com/oauth2/authorize?client_id={$client_id}&redirect_uri={$redirect_uri}&response_type=code&scope=identify%20email%20connections%20guilds%20guilds.members.read";
+$discord_oauth_url = "https://discord.com/oauth2/authorize?client_id=1284484623279067196&response_type=code&redirect_uri=https%3A%2F%2Fdash.novarix-studio.de%2Fcallback.php&scope=identify+email+guilds
+";
 ?>
 
 <!DOCTYPE html>
