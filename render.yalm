@@ -1,0 +1,4 @@
+buildCommand: |
+  apt-get update && apt-get install -y libpq-dev
+  docker-php-ext-install pdo_pgsql
+startCommand: php -S 0.0.0.0:10000 -t .
