@@ -28,7 +28,10 @@ $discord_oauth_url = "https://discord.com/oauth2/authorize?client_id=12844846232
     </header>
     <main>
         <h2>Login mit Discord</h2>
-        <a href="<?= $discord_oauth_url ?>" style="display: inline-flex; align-items: center; background-color: #5865F2; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+        <a href="login.php" style="display: inline-flex; align-items: center; background-color: #5865F2; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+        Mit Discord anmelden
+        </a>
+
             <img src="https://cdn.icon-icons.com/icons2/2108/PNG/512/discord_icon_130958.png" alt="Discord" style="width: 24px; height: 24px; margin-right: 10px;">
             Mit Discord einloggen
         </a>
