@@ -5,13 +5,7 @@ if (!isset($_SESSION['user'])) {
     header("Location: index.php");
     exit();
 }
-require_once 'log_action.php';
 
-// Nur beim ersten Login loggen, wenn nötig:
-if (!isset($_SESSION['already_logged'])) {
-    logAction("global", $_SESSION['user']['id'], "Nutzer hat sich angemeldet.");
-    $_SESSION['already_logged'] = true;
-}
 
 // Zugriffstoken holen
 $access_token = $_SESSION['access_token'] ?? null;
