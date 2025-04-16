@@ -28,10 +28,10 @@ $discord_oauth_url = "https://discord.com/oauth2/authorize?client_id=12844846232
     </header>
     <main>
         <h2>Login mit Discord</h2>
-        <a href="login.php" class="discord-btn">Mit Discord anmelden</a>
-        <img src="https://cdn.icon-icons.com/icons2/2108/PNG/512/discord_icon_130958.png" alt="Discord" style="width: 24px; height: 24px; margin-right: 10px;">
-            Mit Discord einloggen
-        </a>
+       <a href="start_oauth.php" class="discord-btn">
+    <img src="discord.png" alt="Discord Logo" width="20" height="20">
+    Mit Discord einloggen
+</a>
     </main>
     <footer>
         <p>&copy; Novarix Studio</p>
