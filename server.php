@@ -60,18 +60,34 @@ if (!$selected_guild) {
 </header>
 
 <main>
-    <div class="hero">
-        <img src="https://cdn.discordapp.com/icons/<?= $selected_guild['id'] ?>/<?= $selected_guild['icon'] ?>.png"
-             alt="Server Icon"
-             style="width: 128px; border-radius: 50%; margin-bottom: 20px;">
-        <h2>Willkommen im Server-Editor</h2>
-        <p>Hier kannst du später Einstellungen vornehmen (z. B. Webhooks, Prefix, Rollen usw.).</p>
+<div class="container">
+    <aside class="sidebar">
+        <ul>
+            <li><a href="#">🔧 Allgemein</a></li>
+            <li><a href="#">⚙️ Bot-Einstellungen</a></li>
+            <li><a href="#">📢 Logging</a></li>
+            <li><a href="#">🎭 Rollen</a></li>
+            <li><a href="#">🤖 Automationen</a></li>
+            <li><a href="#">🧪 Custom Commands</a></li>
+        </ul>
+    </aside>
 
-        <!-- Beispiel Button -->
-        <a href="#" style="display: inline-block; background-color: #a64eff; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 20px;">
-            Funktion hinzufügen
-        </a>
-    </div>
+    <main class="content">
+        <div class="hero">
+            <img src="https://cdn.discordapp.com/icons/<?= $selected_guild['id'] ?>/<?= $selected_guild['icon'] ?>.png"
+                alt="Server Icon"
+                style="width: 128px; border-radius: 50%; margin-bottom: 20px;">
+            <h2>Willkommen im Server-Editor</h2>
+            <p>Hier kannst du später Einstellungen vornehmen (z. B. Webhooks, Prefix, Rollen usw.).</p>
+
+            <!-- Beispiel Button -->
+            <a href="#" class="discord-btn" style="margin-top: 20px;">
+                Funktion hinzufügen
+            </a>
+        </div>
+    </main>
+</div>
+
 </main>
 
 <footer>
