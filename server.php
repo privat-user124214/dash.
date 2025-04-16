@@ -53,7 +53,7 @@ if (!$selected_guild) {
     <h1><?= htmlspecialchars($selected_guild['name']) ?> bearbeiten</h1>
     <nav>
         <ul>
-            <li><a href="dashboard.php">Zurück zum Dashboard</a></li>
+            <li><a href="dashboard.php">Zurück zur Server Auswahl</a></li>
             <li><a href="logout.php">Logout</a></li>
         </ul>
     </nav>
