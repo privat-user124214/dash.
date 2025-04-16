@@ -28,7 +28,7 @@ $discord_oauth_url = "https://discord.com/oauth2/authorize?client_id=12844846232
     </header>
     <main>
         <h2>Login mit Discord</h2>
-       <a href="start_oauth.php" class="discord-btn">
+       <a href="login.php" class="discord-btn">
     <img src="discord.png" alt="Discord Logo" width="20" height="20">
     Mit Discord einloggen
 </a>
