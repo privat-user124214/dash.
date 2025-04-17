@@ -64,6 +64,7 @@ if (!$selected_guild) {
     <aside class="sidebar">
         <ul>
             <li><a href="#">🔧 Allgemein</a></li>
+            <li><a href="welcomer-system.php?id=<?= $selected_guild['id'] ?>">👋 Willkommen-System</a></li>
             <li><a href="#">⚙️ Bot-Einstellungen</a></li>
             <li><a href="#">📢 Logging</a></li>
             <li><a href="#">🎭 Rollen</a></li>
