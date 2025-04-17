@@ -11,7 +11,9 @@ if (!$server_id) {
 }
 
 // DB verbinden (Daten hier anpassen)
-require 'db.php';
+require 'db.php'; // stellt $pdo bereit
+$stmt = $pdo->prepare("SELECT * FROM ..."); // funktioniert jetzt
+
 
 // Aktuelle Einstellungen laden
 $stmt = $db->prepare("SELECT * FROM welcome_settings WHERE server_id = :server_id");
