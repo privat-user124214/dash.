@@ -11,7 +11,7 @@ if (!$server_id) {
 }
 
 // DB verbinden (Daten hier anpassen)
-$db = new PDO("pgsql:host=HOSTNAME;port=5432;dbname=DBNAME;user=USER;password=PASSWORD;sslmode=require");
+require 'db.php';
 
 // Aktuelle Einstellungen laden
 $stmt = $db->prepare("SELECT * FROM welcome_settings WHERE server_id = :server_id");
