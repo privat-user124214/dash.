@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+// config.php einbinden
+require_once 'config.php';
+
 // Zugriff prüfen
 if (!isset($_SESSION['user'], $_SESSION['access_token'])) {
     header("Location: index.php");
@@ -16,44 +19,58 @@ if (!isset($_GET['id'])) {
 
 $server_id = $_GET['id'];
 
-// Verbindung zur Datenbank
-$db = new PDO('pgsql:host=DEIN_HOST;port=5432;dbname=DEIN_DBNAME;user=DEIN_USER;password=DEIN_PASS', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-]);
-
-// Willkommens-Einstellungen abrufen
-$stmt = $db->prepare("SELECT server_id, message, channel_id, color FROM welcome_settings WHERE server_id = :server_id");
-$stmt->execute(['server_id' => $server_id]);
-$welcome_settings = $stmt->fetch(PDO::FETCH_ASSOC);
-
-// Wenn keine Einstellungen vorhanden sind -> Standardwerte und neuen Eintrag anlegen
-if (!$welcome_settings) {
-    $default_settings = [
-        'server_id' => $server_id,
-        'message' => '',
-        'channel_id' => '',
-        'color' => '#000000'
-    ];
-    $insert_stmt = $db->prepare("INSERT INTO welcome_settings (server_id, message, channel_id, color) VALUES (:server_id, :message, :channel_id, :color)");
-    $insert_stmt->execute($default_settings);
-    $welcome_settings = $default_settings;
+// Verbindung zur Datenbank aufbauen
+try {
+    $db = new PDO(
+        "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME,
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]
+    );
+} catch (PDOException $e) {
+    die("Fehler bei der Datenbankverbindung: " . $e->getMessage());
 }
 
-// Änderungen speichern
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = $_POST['message'] ?? '';
-    $channel_id = $_POST['channel_id'] ?? '';
-    $color = $_POST['color'] ?? '#000000';
+// Bestehende Einstellungen laden
+$query = $db->prepare("SELECT message, channel_id, color FROM welcome_settings WHERE server_id = :server_id");
+$query->execute(['server_id' => $server_id]);
+$settings = $query->fetch(PDO::FETCH_ASSOC);
 
-    $update_stmt = $db->prepare("UPDATE welcome_settings SET message = :message, channel_id = :channel_id, color = :color WHERE server_id = :server_id");
-    $update_stmt->execute([
+// Falls nichts gefunden -> Standardwerte
+if (!$settings) {
+    $settings = [
+        'message' => '',
+        'channel_id' => '',
+        'color' => '#5865F2' // Discord Blau
+    ];
+}
+
+// Formular abgeschickt?
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $message = trim($_POST['message']);
+    $channel_id = trim($_POST['channel_id']);
+    $color = trim($_POST['color']);
+
+    // Entweder UPDATE oder INSERT
+    $query = $db->prepare("
+        INSERT INTO welcome_settings (server_id, message, channel_id, color)
+        VALUES (:server_id, :message, :channel_id, :color)
+        ON CONFLICT (server_id) DO UPDATE
+        SET message = EXCLUDED.message,
+            channel_id = EXCLUDED.channel_id,
+            color = EXCLUDED.color
+    ");
+
+    $query->execute([
         'server_id' => $server_id,
         'message' => $message,
         'channel_id' => $channel_id,
         'color' => $color
     ]);
 
-    // Optional: kleine Bestätigung oder Weiterleitung
+    // Nach Speichern neu laden
     header("Location: welcomer-system.php?id=" . urlencode($server_id));
     exit();
 }
@@ -63,35 +80,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Welcomer-System bearbeiten</title>
+    <title>Welcomer System – Server bearbeiten</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; }
+        input[type="text"], input[type="color"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4752C4;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <h1>Welcomer-System konfigurieren</h1>
+    <h1>Welcomer-Einstellungen für Server ID: <?= htmlspecialchars($server_id) ?></h1>
     <nav>
         <ul>
-            <li><a href="dashboard.php">Zurück zur Server Auswahl</a></li>
+            <li><a href="dashboard.php">Zurück zur Übersicht</a></li>
             <li><a href="logout.php">Logout</a></li>
         </ul>
     </nav>
 </header>
 
-<main class="container">
-    <h2>Willkommensnachricht einstellen</h2>
+<main>
+<div class="container">
+    <h2>Willkommens-Nachricht bearbeiten</h2>
+
     <form method="POST">
-        <label for="message">Willkommensnachricht:</label><br>
-        <textarea name="message" id="message" rows="5" cols="60" placeholder="Willkommensnachricht hier eingeben..." required><?= htmlspecialchars($welcome_settings['message']) ?></textarea><br><br>
+        <div class="form-group">
+            <label for="message">Nachricht</label>
+            <textarea id="message" name="message" rows="4" required><?= htmlspecialchars($settings['message']) ?></textarea>
+            <small>Platzhalter: <code>{user}</code> wird automatisch ersetzt.</small>
+        </div>
 
-        <label for="channel_id">Channel-ID (wo die Nachricht gesendet werden soll):</label><br>
-        <input type="text" name="channel_id" id="channel_id" value="<?= htmlspecialchars($welcome_settings['channel_id']) ?>" placeholder="z.B. 123456789012345678" required><br><br>
+        <div class="form-group">
+            <label for="channel_id">Channel ID</label>
+            <input type="text" id="channel_id" name="channel_id" value="<?= htmlspecialchars($settings['channel_id']) ?>" required>
+        </div>
 
-        <label for="color">Farbe der Nachricht (HEX):</label><br>
-        <input type="color" name="color" id="color" value="<?= htmlspecialchars($welcome_settings['color']) ?>"><br><br>
+        <div class="form-group">
+            <label for="color">Farbe (HEX)</label>
+            <input type="color" id="color" name="color" value="<?= htmlspecialchars($settings['color']) ?>">
+        </div>
 
         <button type="submit">Speichern</button>
     </form>
+</div>
 </main>
 
 <footer>
