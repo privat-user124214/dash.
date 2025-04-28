@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ✨ Nach dem Speichern: an BotGhost schicken
     $webhook_url = 'https://api.botghost.com/webhook/1284484623279067196/9lu3lsd6cga8azenej3kvu';
-    $api_key = '01626a150b7e7458417c8f1c0ee694d351ab451bc647695f8b6604b73b250a52'; // <<<<<<<<<<< DEIN API-KEY HIER!!!
+    $api_key = '70bf9c91d204c149db0d74f1e57f4f85a87e1738fc3a451c19ac1083245321aa'; // <<<<<<<<<<< DEIN API-KEY HIER!!!
 
     $payload = [
         "variables" => [
